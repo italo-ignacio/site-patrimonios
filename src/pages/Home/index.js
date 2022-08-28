@@ -6,7 +6,6 @@ import {
   PrimaryContainer,
   SecondaryContainer,
   TertiaryContainer,
-  SearchContainer,
   RegPatrimonyContainer,
   SearchPatrimonyContainer,
   SearchUserContainer,
@@ -58,79 +57,75 @@ export default function Home() {
     user.name.toLowerCase().includes(lowerSearchUser)
   );
 
-  if (loading) {
-    return <Loading />;
-  }
-  if (loadingPage) {
-    return <Loading />;
-  }
   return (
     <>
+      {loading || loadingPage ? <Loading /> : <></>}
+
       <GeneralContainer>
-        <SearchContainer>
-          <RegPatrimonyContainer>
-            {authenticated ? <RegPatrimony token={token} /> : <></>}
-          </RegPatrimonyContainer>
-          <SearchPatrimonyContainer>
-            <label>
-              Buscar patrimonio:
-              <input
-                placeholder="Nome do pratrimonio"
-                type="text"
-                value={searchPatrimony}
-                onChange={(e) => {
-                  setSearchPatrimony(e.target.value);
-                }}
-              />
-              <button
-                className="btn_backspace"
-                onClick={() => {
-                  setSearchPatrimony("");
-                }}
-              >
-                <TiDelete fontSize={22} />
-              </button>
-            </label>
-          </SearchPatrimonyContainer>
-          <SearchUserContainer>
-            <label>
-              Buscar usuario:
-              <input
-                placeholder="Nome do usuario"
-                type="text"
-                value={searchUser}
-                onChange={(e) => {
-                  setSearchUser(e.target.value);
-                }}
-              />
-              <button
-                className="btn_backspace"
-                onClick={() => {
-                  setSearchUser("");
-                }}
-              >
-                <TiDelete fontSize={22} />
-              </button>
-            </label>
-          </SearchUserContainer>
-        </SearchContainer>
+        <RegPatrimonyContainer>
+          {authenticated ? <RegPatrimony token={token} /> : <></>}
+        </RegPatrimonyContainer>
         <PrimaryContainer>
-          <SecondaryContainer>
-            {filteredPatrimonies.map((patrimony) => (
-              <Patrimony
-                name={patrimony.name}
-                cod={patrimony.cod}
-                owner={patrimony.owner}
-                ownerId={patrimony.userId}
-                move={true}
-                note={patrimony.note}
-                url={patrimony.url}
-                id={patrimony.id}
-                key={patrimony.id}
-              />
-            ))}
-          </SecondaryContainer>
+          <div>
+            <SearchPatrimonyContainer>
+              <label>
+                Buscar patrimonio:
+                <input
+                  placeholder="Nome do pratrimonio"
+                  type="text"
+                  value={searchPatrimony}
+                  onChange={(e) => {
+                    setSearchPatrimony(e.target.value);
+                  }}
+                />
+                <button
+                  className="btn_backspace"
+                  onClick={() => {
+                    setSearchPatrimony("");
+                  }}
+                >
+                  <TiDelete fontSize={22} />
+                </button>
+              </label>
+            </SearchPatrimonyContainer>
+            <SecondaryContainer>
+              {filteredPatrimonies.map((patrimony) => (
+                <Patrimony
+                  name={patrimony.name}
+                  code={patrimony.code}
+                  owner={patrimony.owner}
+                  ownerId={patrimony.userId}
+                  move={true}
+                  note={patrimony.note}
+                  url={patrimony.url}
+                  id={patrimony.id}
+                  key={patrimony.id}
+                />
+              ))}
+            </SecondaryContainer>
+          </div>
           <TertiaryContainer>
+            <SearchUserContainer>
+              <label>
+                Buscar usuario:
+                <input
+                  placeholder="Nome do usuario"
+                  type="text"
+                  value={searchUser}
+                  onChange={(e) => {
+                    setSearchUser(e.target.value);
+                  }}
+                />
+                <button
+                  className="btn_backspace"
+                  onClick={() => {
+                    setSearchUser("");
+                  }}
+                >
+                  <TiDelete fontSize={22} />
+                </button>
+              </label>
+            </SearchUserContainer>
             <ResetUserContainer
               to={"/"}
               selected={location.search !== "" ? false : true}
@@ -140,6 +135,7 @@ export default function Home() {
                 {totalPatrimonies.toString() !== "0" ? totalPatrimonies : ""}
               </div>
             </ResetUserContainer>
+
             {filteredUsers.map((user) => (
               <UserList
                 key={user.id}
@@ -152,6 +148,7 @@ export default function Home() {
           </TertiaryContainer>
         </PrimaryContainer>
       </GeneralContainer>
+      <>space</>
     </>
   );
 }

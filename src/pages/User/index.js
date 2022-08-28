@@ -25,7 +25,7 @@ import Patrimony from "../../components/Patrimony";
 
 export default function User() {
   const { id } = useParams();
-  const { name: getOwner, authenticated, token } = useContext(AuthContext);
+  const { user, authenticated, token } = useContext(AuthContext);
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -40,23 +40,25 @@ export default function User() {
     const getData = async () => {
       try {
         const response = await axios.get(`/user/${id}`);
-        const patrimony = response.data;
-        setName(patrimony.name);
-        setEmail(patrimony.email);
-        setPatrimony(patrimony.patrimonies.length);
-        setPatrimonies(patrimony.patrimonies);
-
-        if (patrimony.name === getOwner) {
-          setIsOwner(true);
+        const userData = response.data;
+        setName(userData.name);
+        setEmail(userData.email);
+        setPatrimony(userData.patrimonies.length);
+        setPatrimonies(userData.patrimonies);
+        if (user != null) {
+          if (userData.name === user.name) {
+            setIsOwner(true);
+          }
         }
+        setLoading(false);
       } catch (er) {
         toast.error("Usuario não encontrado");
+        setLoading(false);
         navigate("/");
       }
     };
     getData();
-    setLoading(false);
-  }, [id, navigate, getOwner]);
+  }, [id, navigate, user]);
 
   const filteredPatrimonies = patrimonies.filter((patrimony) =>
     patrimony.name.toLowerCase().includes(lowerSearchPatrimony)
@@ -64,11 +66,10 @@ export default function User() {
   const handleclick = () => {
     navigate(`/register`);
   };
-  if (loading) {
-    return <Loading />;
-  }
+
   return (
     <>
+      {loading ? <Loading /> : <></>}
       <GeneralContainer>
         <PrimaryContainer>
           {isOwner ? (
@@ -125,7 +126,7 @@ export default function User() {
           {filteredPatrimonies.map((patrimony) => (
             <Patrimony
               name={patrimony.name}
-              cod={patrimony.cod}
+              code={patrimony.code}
               owner={name}
               move={false}
               note={patrimony.note}
@@ -136,6 +137,7 @@ export default function User() {
           ))}
         </PatrimoniesContainer>
       </GeneralContainer>
+      <>space</>
     </>
   );
 }

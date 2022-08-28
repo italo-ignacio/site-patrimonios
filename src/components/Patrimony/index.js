@@ -3,7 +3,7 @@ import {
   PatrimonyContainer,
   PatrymonyImage,
   PatrymonyName,
-  PatrymonyCod,
+  PatrymonyCode,
   PatrymonyOwner,
   PatrymonyNote,
 } from "./styled";
@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 
 export default function Patrimony({
   name,
-  cod,
+  code,
   owner,
   note,
   url,
@@ -30,12 +30,12 @@ export default function Patrimony({
           <Link to={`/patrimony/${id}`}>{name}</Link>
         </label>
       </PatrymonyName>
-      <PatrymonyCod>
+      <PatrymonyCode>
         Código:
         <label>
-          <Link to={`/patrimony/${id}`}>{cod}</Link>
+          <Link to={`/patrimony/${id}`}>{code}</Link>
         </label>
-      </PatrymonyCod>
+      </PatrymonyCode>
       <PatrymonyOwner>
         Dono:
         {move ? (

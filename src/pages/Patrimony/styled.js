@@ -17,6 +17,10 @@ export const SecondaryContainer = styled.div`
   .bt {
     cursor: pointer;
   }
+  label {
+    margin-left: 1rem;
+    color: black;
+  }
 `;
 
 export const PatrimonyContainer = styled.div`
@@ -24,7 +28,7 @@ export const PatrimonyContainer = styled.div`
   grid-template-columns: 300px auto auto;
   grid-template-rows: repeat(4, auto);
   grid-template-areas:
-    "image name cod"
+    "image name code"
     "image owner note"
     "details details note"
     "details details note";
@@ -36,14 +40,30 @@ export const PatrimonyContainer = styled.div`
   background-color: ${secondaryDarkColor};
   word-break: keep-all;
   font-weight: bold;
+  @media (max-width: 875px) {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    label {
+      min-width: 100%;
+      margin-right: 0;
+    }
+    row-gap: 0.3rem;
+  }
 `;
 
 export const PatrymonyImage = styled.div`
   grid-area: image;
-
+  text-align: center;
   img {
     max-width: 250px;
     max-height: 250px;
+  }
+  @media (max-width: 875px) {
+    img {
+      max-width: 80%;
+      max-height: auto;
+    }
   }
 `;
 export const PatrymonyName = styled.div`
@@ -61,10 +81,20 @@ export const PatrymonyName = styled.div`
     margin-bottom: 10px;
     min-height: 70%;
   }
+  @media (max-width: 875px) {
+    margin-right: 0;
+    padding-right: 0;
+    label {
+      min-width: 100%;
+      margin-right: 0;
+      padding-right: 0;
+      margin-bottom: 0;
+    }
+  }
 `;
 
-export const PatrymonyCod = styled.div`
-  grid-area: cod;
+export const PatrymonyCode = styled.div`
+  grid-area: code;
   display: flex;
   flex-direction: column;
   label {
@@ -74,7 +104,7 @@ export const PatrymonyCod = styled.div`
     border-radius: 5px;
     padding: 5px;
     min-height: 70%;
-    min-width: 300px;
+    min-width: 100%;
   }
 `;
 export const PatrymonyOwner = styled.div`
@@ -90,6 +120,16 @@ export const PatrymonyOwner = styled.div`
     padding: 5px;
     min-height: 70%;
   }
+  @media (max-width: 875px) {
+    margin-right: 0;
+    padding-right: 0;
+    label {
+      min-width: 100%;
+      margin-right: 0;
+      padding-right: 0;
+      margin-bottom: 0;
+    }
+  }
 `;
 export const PatrymonyNote = styled.div`
   grid-area: note;
@@ -102,6 +142,16 @@ export const PatrymonyNote = styled.div`
     border: 1px solid black;
     border-radius: 5px;
     padding: 5px;
+  }
+  @media (max-width: 875px) {
+    margin-right: 0;
+    padding-right: 0;
+    label {
+      min-width: 100%;
+      margin-right: 0;
+      padding-right: 0;
+      margin-bottom: 0;
+    }
   }
 `;
 
@@ -118,5 +168,15 @@ export const PatrymonyDetails = styled.div`
     border: 1px solid black;
     border-radius: 5px;
     padding: 5px;
+  }
+  @media (max-width: 875px) {
+    margin-right: 0;
+    padding-right: 0;
+    label {
+      min-width: 100%;
+      margin-right: 0;
+      padding-right: 0;
+      margin-bottom: 0;
+    }
   }
 `;

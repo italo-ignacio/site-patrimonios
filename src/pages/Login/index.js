@@ -36,11 +36,10 @@ export default function Login() {
     if (formErros) return;
     login(email, password);
   }
-  if (loading) {
-    return <Loading />;
-  }
+
   return (
     <>
+      {loading ? <Loading /> : <></>}
       <Container>
         <h1>Login</h1>
         <Form onSubmit={handleSubmit}>

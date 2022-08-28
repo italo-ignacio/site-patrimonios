@@ -5,7 +5,7 @@ import {
   PatrimonyContainer,
   PatrymonyImage,
   PatrymonyName,
-  PatrymonyCod,
+  PatrymonyCode,
   PatrymonyOwner,
   PatrymonyNote,
   PatrymonyDetails,
@@ -16,19 +16,22 @@ import Loading from "../../components/Loading";
 import axios from "../../services/axios";
 import { FaEdit } from "react-icons/fa";
 import { AuthContext } from "../../contexts/auth";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { GiConfirmed } from "react-icons/gi";
 
 export default function Patrimony() {
   const { id } = useParams();
-  const { isAdmin, name: getOwner } = useContext(AuthContext);
+  const { user, token } = useContext(AuthContext);
   const navigate = useNavigate();
   const [name, setName] = useState("");
-  const [cod, setCod] = useState("");
+  const [code, setCode] = useState("");
   const [note, setNote] = useState("");
   const [details, setDetails] = useState("");
   const [owner, setOwner] = useState("");
   const [image, setImage] = useState("");
   const [loading, setLoading] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
+  const [del, setDel] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
@@ -36,36 +39,68 @@ export default function Patrimony() {
         const response = await axios.get(`/patrimony/${id}`);
         const patrimony = response.data;
         setName(patrimony.name);
-        setCod(patrimony.cod);
+        setCode(patrimony.code);
         setNote(patrimony.note);
         setDetails(patrimony.details);
         setOwner(patrimony.owner);
         setImage(patrimony.url);
-        if (isAdmin || patrimony.owner === getOwner) {
-          setIsOwner(true);
+        if (user != null) {
+          if (user.is_admin || patrimony.owner === user.name) {
+            setIsOwner(true);
+          }
         }
+        setLoading(false);
       } catch (er) {
         toast.error("Patrimônio não encontrado");
+        setLoading(false);
         navigate("/");
       }
     };
     getData();
-    setLoading(false);
-  }, [id, navigate, getOwner, isAdmin]);
+  }, [id, navigate, user]);
+
+  const handleDelete = async () => {
+    try {
+      setLoading(true);
+      await axios.delete(`/patrimony/${id}`, {
+        headers: { authorization: `Bearer ${token}` },
+      });
+      setLoading(false);
+      toast.success("Patrimônio deletado com sucesso");
+
+      navigate(`/user/${user.id.toString()}`);
+    } catch (er) {
+      toast.success("Erro ao deletar");
+      setLoading(false);
+    }
+  };
 
   const handleclick = () => {
     navigate(`/updatePatrimony/${id}`);
   };
-  if (loading) {
-    return <Loading />;
-  }
 
   return (
     <>
+      {loading ? <Loading /> : <></>}
       <PrimaryContainer>
         {isOwner ? (
           <SecondaryContainer>
             <FaEdit fontSize={25} className="bt" onClick={handleclick} />
+            <label>
+              {del ? (
+                <GiConfirmed
+                  fontSize={25}
+                  className="bt"
+                  onClick={handleDelete}
+                />
+              ) : (
+                <RiDeleteBin6Line
+                  fontSize={25}
+                  className="bt"
+                  onClick={() => setDel(true)}
+                />
+              )}
+            </label>
           </SecondaryContainer>
         ) : (
           <></>
@@ -78,10 +113,10 @@ export default function Patrimony() {
             Patrimônio:
             <label>{name}</label>
           </PatrymonyName>
-          <PatrymonyCod>
+          <PatrymonyCode>
             Código:
-            <label>{cod}</label>
-          </PatrymonyCod>
+            <label>{code}</label>
+          </PatrymonyCode>
           <PatrymonyOwner>
             Dono:
             <label>{owner}</label>
@@ -96,6 +131,7 @@ export default function Patrimony() {
           </PatrymonyDetails>
         </PatrimonyContainer>
       </PrimaryContainer>
+      <>space</>
     </>
   );
 }

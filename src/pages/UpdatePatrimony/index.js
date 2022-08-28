@@ -12,7 +12,7 @@ export default function UpdatePatrimony() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [name, setName] = useState("");
-  const [cod, setCod] = useState("");
+  const [code, setCode] = useState("");
   const [note, setNote] = useState("");
   const [details, setDetails] = useState("");
   const [image, setImage] = useState("");
@@ -25,17 +25,18 @@ export default function UpdatePatrimony() {
         const response = await axios.get(`/patrimony/${id}`);
         const patrimony = response.data;
         setName(patrimony.name);
-        setCod(patrimony.cod);
+        setCode(patrimony.code);
         setNote(patrimony.note);
         setDetails(patrimony.details);
         setImage(patrimony.url);
+        setLoading(false);
       } catch (er) {
         toast.error("Patrimônio não encontrado");
+        setLoading(false);
         navigate("/");
       }
     };
     getData();
-    setLoading(false);
   }, [id, navigate]);
 
   async function handleSubmit(e) {
@@ -45,17 +46,24 @@ export default function UpdatePatrimony() {
       formErros = true;
       toast.error("Nome deve ter entre 2 e 255 caracteres");
     }
+    if (code.length < 1 || code.length > 50) {
+      formErros = true;
+      toast.error("Código deve ter entre 1 e 50 caracteres");
+    }
     if (formErros) return;
 
     try {
       setLoading(true);
-      axios.defaults.headers.Authorization = `Bearer ${token}`;
-      await axios.put(`/patrimony/${id}`, {
-        name,
-        cod,
-        note,
-        details,
-      });
+      await axios.put(
+        `/patrimony/${id}`,
+        {
+          name,
+          code,
+          note,
+          details,
+        },
+        { headers: { authorization: `Bearer ${token}` } }
+      );
       toast.success("Patrimônio atualizado com sucesso");
       setLoading(false);
     } catch (er) {
@@ -88,10 +96,10 @@ export default function UpdatePatrimony() {
 
     try {
       setLoading(true);
-      axios.defaults.headers.Authorization = `Bearer ${token}`;
       await axios.put(`/photo/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          authorization: `Bearer ${token}`,
         },
       });
       const photoURL = URL.createObjectURL(photo);
@@ -100,13 +108,16 @@ export default function UpdatePatrimony() {
       setLoading(false);
     } catch (er) {
       const errors = get(er, "response.data.errors", []);
+      console.log(er);
       // eslint-disable-next-line
       errors.map((error) => {
         if (error === "Token expired or invalid") {
           toast.error("Permissão negada");
           navigate("/");
-        }
-        if (error === "Permission required") {
+        } else if (error === "Login required") {
+          toast.error("Permissão negada");
+          navigate("/");
+        } else if (error === "Permission required") {
           toast.error("Permissão negada");
           navigate("/");
         } else {
@@ -117,12 +128,9 @@ export default function UpdatePatrimony() {
     }
   };
 
-  if (loading) {
-    return <Loading />;
-  }
-
   return (
     <>
+      {loading ? <Loading /> : <></>}
       <Container>
         <Link to={`/patrimony/${id}`}>Voltar</Link>
         <Label>Atualizar patrimônio</Label>
@@ -150,14 +158,14 @@ export default function UpdatePatrimony() {
             />
           </label>
 
-          <label htmlFor="cod">
+          <label htmlFor="code">
             Código:
             <input
               placeholder="Codigo do patrimônio"
               type="text"
-              value={cod}
+              value={code}
               onChange={(e) => {
-                setCod(e.target.value);
+                setCode(e.target.value);
               }}
             />
           </label>
@@ -188,6 +196,7 @@ export default function UpdatePatrimony() {
           <button type="submit">Salvar dados</button>
         </Form>
       </Container>
+      <>space</>
     </>
   );
 }

@@ -10,6 +10,9 @@ export const GeneralContainer = styled.div`
   padding: 30px;
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  @media (max-width: 420px) {
+    padding: 0.8rem;
+  }
 `;
 
 export const PrimaryContainer = styled.div`
@@ -17,20 +20,22 @@ export const PrimaryContainer = styled.div`
   display: grid;
   grid-template-columns: 80% 20%;
   grid-template-areas: "patrimony user";
-  @media (max-width: 768px) {
-    display: grid;
-    grid-template-columns: 100%;
-    grid-template-areas: "patrimony";
+  min-height: 1000px;
+  @media (max-width: 990px) {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
   }
 `;
 
 export const SecondaryContainer = styled.div`
   grid-area: patrimony;
   display: grid;
-  grid-template-columns: auto auto;
-  @media (max-width: 768px) {
-    display: grid;
-    grid-template-columns: 100%;
+  grid-template-columns: 50% 50%;
+  max-height: 50%;
+  @media (max-width: 900px) {
+    display: flex;
+    flex-direction: column;
   }
 `;
 
@@ -56,26 +61,7 @@ export const TertiaryContainer = styled.div`
   flex-direction: column;
 `;
 
-export const SearchContainer = styled.div`
-  display: grid;
-  grid-template-columns: 40% 40% 20%;
-  grid-template-areas: "regPatrimony searchPatrimony searchUser";
-
-  .btn_backspace {
-    position: absolute;
-    top: 23px;
-    height: 39px;
-    padding: 8px 10px;
-    right: 0;
-    z-index: 10;
-    border: none;
-    background: transparent;
-    color: ${colors.primaryColor};
-  }
-`;
-
 export const RegPatrimonyContainer = styled.div`
-  grid-area: regPatrimony;
   text-align: center;
 
   .reg_container {
@@ -84,7 +70,6 @@ export const RegPatrimonyContainer = styled.div`
 `;
 
 export const SearchPatrimonyContainer = styled.div`
-  grid-area: searchPatrimony;
   margin-right: 25px;
   position: relative;
 
@@ -93,7 +78,17 @@ export const SearchPatrimonyContainer = styled.div`
     flex-direction: column;
     margin-bottom: 20px;
   }
-
+  .btn_backspace {
+    position: absolute;
+    top: 23px;
+    height: 39px;
+    padding: 10px;
+    right: 0;
+    z-index: 10;
+    border: none;
+    background: transparent;
+    color: ${colors.primaryColor};
+  }
   input {
     height: 40px;
     font-size: 18px;
@@ -101,22 +96,33 @@ export const SearchPatrimonyContainer = styled.div`
     padding: 0 10px;
     border-radius: 4px;
     margin-top: 5px;
-    width: 100%;
     % &:focus {
       border: 2px solid ${colors.primaryColor};
     }
   }
+  @media (max-width: 420px) {
+    margin-right: 0;
+  }
 `;
 
 export const SearchUserContainer = styled.div`
-  grid-area: searchUser;
   position: relative;
   label {
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
   }
-
+  .btn_backspace {
+    position: absolute;
+    top: 23px;
+    height: 39px;
+    padding: 10px;
+    right: 0;
+    z-index: 10;
+    border: none;
+    background: transparent;
+    color: ${colors.primaryColor};
+  }
   input {
     height: 40px;
     font-size: 18px;

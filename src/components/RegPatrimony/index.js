@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function RegPatrimony({ token }) {
   const [name, setName] = useState("");
-  const [cod, setCode] = useState("");
+  const [code, setCode] = useState("");
   const [showCadPatrimony, setShowCadPatrimony] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -22,22 +22,25 @@ export default function RegPatrimony({ token }) {
       formErros = true;
       toast.error("Nome deve ter entre 2 e 255 caracteres");
     }
-    if (cod.length < 1 || cod.length > 10) {
+    if (code.length < 1 || code.length > 50) {
       formErros = true;
-      toast.error("Código deve ter entre 1 e 10 caracteres");
+      toast.error("Código deve ter entre 1 e 50 caracteres");
     }
     if (formErros) {
       return;
     }
     try {
       setLoading(true);
-      axios.defaults.headers.Authorization = `Bearer ${token}`;
-      const response = await axios.post("/patrimony", {
-        name,
-        cod,
-      });
+      const response = await axios.post(
+        "/patrimony",
+        {
+          name,
+          code,
+        },
+        { headers: { authorization: `Bearer ${token}` } }
+      );
       setLoading(false);
-      navigate(`/updatePatrimony/${response.data.id}`);
+      navigate(`/updatePatrimony/${response.data.id.toString()}`);
     } catch (er) {
       setLoading(false);
       const errors = get(er, "response.data.errors", []);
@@ -53,11 +56,10 @@ export default function RegPatrimony({ token }) {
   const handleclick = () => {
     setShowCadPatrimony(!showCadPatrimony);
   };
-  if (loading) {
-    return <Loading />;
-  }
+
   return (
     <>
+      {loading ? <Loading /> : <></>}
       <button onClick={handleclick} className="btn_reg">
         Cadastrar patrimônio
       </button>
@@ -74,11 +76,11 @@ export default function RegPatrimony({ token }) {
                 }}
               />
             </label>
-            <label htmlFor="cod">
+            <label htmlFor="code">
               <input
                 placeholder="Código do patrimônio"
                 type="text"
-                value={cod}
+                value={code}
                 onChange={(e) => {
                   setCode(e.target.value);
                 }}

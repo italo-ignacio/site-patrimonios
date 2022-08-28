@@ -12,56 +12,31 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState("");
-  const [name, setName] = useState("");
-  const [id, setId] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
 
-  const validate = async (token, id, is_admin) => {
-    axios.defaults.headers.Authorization = `Bearer ${token}`;
+  const validate = async (token) => {
     try {
-      await axios.post("/validate", {
-        id,
-        is_admin,
-      });
+      const response = await axios.post(
+        "/validate",
+        {},
+        { headers: { authorization: `Bearer ${token}` } }
+      );
+      setUser(response.data);
+      setToken(token);
       return true;
     } catch (e) {
-      localStorage.removeItem("user");
       localStorage.removeItem("token");
       setUser(null);
       setToken("");
-      setName("");
-      setIsAdmin(false);
-      setId("");
-      axios.defaults.headers.Authorization = null;
-      console.log(e.data.errors);
       return false;
     }
   };
 
   useEffect(() => {
-    const recoverdUser = localStorage.getItem("user");
     const recoverdToken = localStorage.getItem("token");
-    const userr = JSON.parse(recoverdUser);
-    if (recoverdUser) {
-      setUser(userr);
-      setName(userr.name);
-      setIsAdmin(userr.is_admin);
-      setId(userr.id);
-      if (recoverdToken) {
-        setToken(recoverdToken);
-        validate(recoverdToken, userr.id, userr.is_admin);
-      } else {
-        setUser(null);
-        setName("");
-        setIsAdmin(false);
-        setId("");
-        setToken("");
-      }
+    if (recoverdToken) {
+      validate(recoverdToken);
     } else {
       setUser(null);
-      setName("");
-      setIsAdmin(false);
-      setId("");
       setToken("");
     }
 
@@ -80,13 +55,9 @@ export const AuthProvider = ({ children }) => {
 
       setUser(loggedUser);
       setToken(token);
-      setName(loggedUser.name);
-      setIsAdmin(loggedUser.is_admin);
-      setId(loggedUser.id);
-      localStorage.setItem("user", JSON.stringify(loggedUser));
+
       localStorage.setItem("token", token);
-      localStorage.setItem("email", email);
-      axios.defaults.headers.Authorization = `Bearer ${token}`;
+      localStorage.setItem("email", loggedUser.email);
 
       toast.success("Login realizado com sucesso");
       setLoading(false);
@@ -105,33 +76,23 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
   const logout = () => {
-    localStorage.removeItem("user");
     localStorage.removeItem("token");
     setUser(null);
     setToken("");
-    setName("");
-    setIsAdmin(false);
-    setId("");
-    axios.defaults.headers.Authorization = null;
   };
-  const changeName = (name) => {
-    setName(name);
-  };
+
   return (
     <AuthContext.Provider
       value={{
-        authenticated: !!user,
+        authenticated: user != null ? true : false,
         user,
         loading,
         token,
-        name,
-        isAdmin,
-        id,
         login,
         logout,
         validate,
-        changeName,
       }}
     >
       {children}

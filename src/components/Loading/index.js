@@ -1,11 +1,14 @@
 import React from "react";
 import { Container } from "./styled";
 
-export default function Loading() {
+const Loading = () => {
   return (
     <Container>
       <div />
-      <span>Carregando...</span>
+      <span>Carregando</span>
+      <span className="icone"></span>
     </Container>
   );
-}
+};
+
+export default Loading;

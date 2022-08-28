@@ -9,6 +9,10 @@ export const Container = styled.div`
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   text-align: center;
+  @media (max-width: 350px) {
+    width: auto;
+    padding: 10px;
+  }
 `;
 
 export const Form = styled.form`

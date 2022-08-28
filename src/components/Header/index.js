@@ -1,28 +1,55 @@
-import React, { useContext } from "react";
-import { FaCircle, FaSignOutAlt } from "react-icons/fa";
+import React, { useContext, useState } from "react";
+import { FaSignOutAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { Nav } from "./styled";
+import { Nav, MenuContent, MenuLabel, HeaderContainer } from "./styled";
 import { AuthContext } from "../../contexts/auth";
+import Hamburger from "hamburger-react";
 
 export default function Header() {
-  const { logout, authenticated, name, id } = useContext(AuthContext);
+  const { logout, authenticated, user } = useContext(AuthContext);
+  const [show, setShow] = useState(false);
 
+  const toggleMenu = () => {
+    setShow(!show);
+  };
   const hadleLogout = () => {
     logout();
   };
   return (
-    <>
-      <Nav>
-        <Link to="/">Home</Link>
-        {authenticated ? <></> : <Link to="/register">Registrar</Link>}
-        {authenticated ? <></> : <Link to="/login">Login</Link>}
-        {authenticated ? <Link to={`/user/${id}`}>Perfil</Link> : <></>}
+    <HeaderContainer>
+      <Nav show={show}>
+        <Link to="/" onClick={toggleMenu}>
+          Home
+        </Link>
+        {authenticated ? (
+          <></>
+        ) : (
+          <Link to="/register" onClick={toggleMenu}>
+            Registrar
+          </Link>
+        )}
+        {authenticated ? (
+          <></>
+        ) : (
+          <Link to="/login" onClick={toggleMenu}>
+            Login
+          </Link>
+        )}
+        {authenticated ? (
+          <Link to={`/user/${user.id}`} onClick={toggleMenu}>
+            Perfil
+          </Link>
+        ) : (
+          <></>
+        )}
 
-        <label>
-          <FaCircle color={authenticated ? "#33FF14" : "red"} />
-        </label>
-
-        {authenticated ? <Link to="/register">{name}</Link> : <></>}
+        {authenticated ? (
+          <Link to="/register" onClick={toggleMenu}>
+            {user.name}
+          </Link>
+        ) : (
+          <></>
+        )}
         {authenticated ? (
           <label className="btn_logout" onClick={hadleLogout}>
             <FaSignOutAlt />
@@ -31,6 +58,12 @@ export default function Header() {
           <></>
         )}
       </Nav>
-    </>
+
+      <MenuContent>
+        <MenuLabel onClick={toggleMenu}>
+          <Hamburger toggled={show} />
+        </MenuLabel>
+      </MenuContent>
+    </HeaderContainer>
   );
 }

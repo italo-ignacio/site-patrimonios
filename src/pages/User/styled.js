@@ -7,6 +7,9 @@ export const GeneralContainer = styled.div`
   margin: 30px 2%;
   padding: 30px;
   border-radius: 9px;
+  @media (max-width: 400px) {
+    padding: 10px;
+  }
 `;
 
 export const PrimaryContainer = styled.div`
@@ -14,6 +17,10 @@ export const PrimaryContainer = styled.div`
   display: grid;
   grid-template-columns: 70% 30%;
   grid-template-areas: "user edit";
+  @media (max-width: 1040px) {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 export const RegPatrimonyContainer = styled.div`
@@ -21,6 +28,9 @@ export const RegPatrimonyContainer = styled.div`
   text-align: center;
   .reg_container {
     margin: 10px auto;
+  }
+  @media (max-width: 1040px) {
+    margin-bottom: 2rem;
   }
 `;
 
@@ -37,13 +47,8 @@ export const SecondaryContainer = styled.div`
 
 export const UserContainer = styled.div`
   grid-area: user;
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-template-rows: repeat(3, auto);
-  grid-template-areas:
-    "name name"
-    "email email"
-    "patrimony patrimony";
+  display: flex;
+  flex-direction: column;
   width: 95%;
   margin: 30px auto;
   margin-bottom: 100px;
@@ -51,12 +56,17 @@ export const UserContainer = styled.div`
   border-radius: 9px;
   padding: 10px;
   background-color: ${secondaryDarkColor};
-  word-break: keep-all;
+  word-break: break-all;
   font-weight: bold;
+  @media (max-width: 1040px) {
+    margin-bottom: 2rem;
+  }
+  @media (max-width: 280px) {
+    max-width: 100%;
+  }
 `;
 
 export const UserName = styled.div`
-  grid-area: name;
   display: flex;
   flex-direction: column;
   margin-top: 15px;
@@ -74,7 +84,6 @@ export const UserName = styled.div`
 `;
 
 export const UserEmail = styled.div`
-  grid-area: email;
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
@@ -90,7 +99,6 @@ export const UserEmail = styled.div`
   }
 `;
 export const UserPatrimony = styled.div`
-  grid-area: patrimony;
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
@@ -109,6 +117,10 @@ export const PatrimoniesContainer = styled.div`
   display: grid;
   grid-template-columns: 50% 50%;
   margin-top: 50px;
+  @media (max-width: 900px) {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 export const SearchPatrimonyContainer = styled.div`
@@ -137,13 +149,20 @@ export const SearchPatrimonyContainer = styled.div`
   }
   .btn_backspace {
     position: absolute;
-    top: 23px;
+
     height: 39px;
-    padding: 8px 10px;
+    padding: 9px;
+    bottom: 0;
     right: 0;
-    z-index: 10;
+    z-index: 2;
     border: none;
     background: transparent;
     color: ${primaryColor};
+  }
+  @media (max-width: 900px) {
+    max-width: 90%;
+  }
+  @media (max-width: 280px) {
+    max-width: 100%;
   }
 `;

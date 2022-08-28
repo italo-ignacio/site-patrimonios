@@ -10,12 +10,16 @@ export default createGlobalStyle`
         box-sizing:border-box;
     }
     body{
-        font-family:sans-serif; 
+        font-family:sans-serif;  
+        
     }
     html,body,#root{
         height:100%;
         background: ${primaryDarkColor};
         color: ${primaryDarkColor};
+        @media (max-width: 720px) {
+            margin-top: 3rem;
+        }
     }
 
     button{
@@ -49,4 +53,11 @@ export const Container = styled.section`
   padding: 30px;
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  @media (max-width: 500px) {
+    width: 90%;
+    padding: 15px;
+    h1 {
+      text-align: center;
+    }
+  }
 `;

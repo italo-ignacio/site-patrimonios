@@ -10,16 +10,8 @@ import { AuthContext } from "../../contexts/auth";
 import Loading from "../../components/Loading";
 
 export default function Register() {
-  const {
-    authenticated,
-    validate,
-    changeName,
-    token,
-    logout,
-    id,
-    isAdmin,
-    name: nameUser,
-  } = useContext(AuthContext);
+  const { authenticated, validate, token, logout, user } =
+    useContext(AuthContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,15 +19,12 @@ export default function Register() {
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (!authenticated) {
-      setLoading(false);
-      return;
+    if (authenticated) {
+      setEmail(user.email);
+      setName(user.name);
     }
-    const localEmail = localStorage.getItem("email");
-    setEmail(localEmail);
-    setName(nameUser);
     setLoading(false);
-  }, [authenticated, nameUser]);
+  }, [authenticated, user]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -56,39 +45,38 @@ export default function Register() {
     }
     if (formErros) return;
 
-    try {
-      if (authenticated) {
-        setLoading(true);
-        try {
-          axios.defaults.headers.Authorization = `Bearer ${token}`;
-          await axios.put(`/user/${id}`, {
+    if (authenticated) {
+      setLoading(true);
+      try {
+        await axios.put(
+          `/user/${user.id.toString()}`,
+          {
             name,
             email,
             password: password || undefined,
-          });
-          toast.success("Conta atualizada com sucesso");
-          localStorage.setItem(
-            "user",
-            JSON.stringify({ name, id, is_admin: isAdmin })
-          );
-          localStorage.setItem("email", email);
-          const verify = await validate(token, id, isAdmin);
-          if (verify) {
-            changeName(name);
-            setLoading(false);
-          } else {
-            logout();
-            toast.warning("Refaça o login para validar seu token");
-            setLoading(false);
-            navigate("/login");
-          }
-        } catch (error) {
+          },
+          { headers: { authorization: `Bearer ${token}` } }
+        );
+        toast.success("Conta atualizada com sucesso");
+        localStorage.setItem("email", email);
+        const verify = await validate(token);
+        if (verify) {
+          setLoading(false);
+        } else {
           logout();
           toast.warning("Refaça o login para validar seu token");
+          setLoading(false);
           navigate("/login");
         }
-      } else {
-        setLoading(true);
+      } catch (error) {
+        logout();
+        toast.warning("Refaça o login para validar seu token");
+        setLoading(false);
+        navigate("/login");
+      }
+    } else {
+      setLoading(true);
+      try {
         await axios.post("/user", {
           name,
           email,
@@ -98,23 +86,22 @@ export default function Register() {
         localStorage.setItem("email", email);
         setLoading(false);
         navigate("/login");
+      } catch (er) {
+        const errors = get(er, "response.data.errors", []);
+        // eslint-disable-next-line
+        errors.map((error) => {
+          if (error === "E-mail already exists") {
+            toast.error("E-mail já existe");
+          }
+        });
+        setLoading(false);
       }
-    } catch (er) {
-      const errors = get(er, "response.data.errors", []);
-      // eslint-disable-next-line
-      errors.map((error) => {
-        if (error === "email must be unique") {
-          toast.error("E-mail já existe");
-        }
-      });
-      setLoading(false);
     }
   }
-  if (loading) {
-    return <Loading />;
-  }
+
   return (
     <>
+      {loading ? <Loading /> : <></>}
       <Container>
         <h1>{authenticated ? "Editar dados" : "Registrar"}</h1>
         <Form onSubmit={handleSubmit}>
